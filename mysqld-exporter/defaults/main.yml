@@ -1,0 +1,21 @@
+---
+mysqld_exporter_install_dir: "/opt/prometheus-exporters/mysqld-exporter"
+mysqld_exporter_version: "0.12.1"
+mysqld_exporter_name: "mysqld_exporter-{{ mysqld_exporter_version }}.linux-{{ go_arch }}"
+mysqld_exporter_url: "https://github.com/prometheus/mysqld_exporter/releases/download/v{{ mysqld_exporter_version }}/{{ mysqld_exporter_name }}.tar.gz"
+mysqld_exporter_binary: "{{ mysqld_exporter_install_dir }}/{{ mysqld_exporter_name }}/mysqld_exporter"
+mysqld_exporter_symlink: "{{ mysqld_exporter_install_dir }}/mysqld_exporter"
+
+mysqld_exporter_web_listen_address: "{{ ansible_default_ipv4.address }}:9104"
+mysqld_exporter_web_telemetry_path: "/metrics"
+
+mysqld_exporter_system_user: "mysqld-exporter"
+mysqld_exporter_system_group: "{{ mysqld_exporter_system_user }}"
+
+mysqld_exporter_mysql_user: "exporter"
+mysqld_exporter_mysql_password: "hrPIwag4i8dC553y"
+
+mysqld_exporter_dsn: "{{ mysqld_exporter_mysql_user }}:{{ mysqld_exporter_mysql_password }}@(localhost:3306)/"
+mysqld_exporter_my_cnf: ""
+mysqld_exporter_collect: []
+mysqld_exporter_no_collect: []

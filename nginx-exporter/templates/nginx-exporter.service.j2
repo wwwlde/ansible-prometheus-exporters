@@ -1,0 +1,19 @@
+[Unit]
+Description=nginx_exporter - Nginx metrics exporter for Prometheus.
+Documentation=https://github.com/nginxinc/nginx-prometheus-exporter
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+User={{ nginx_exporter_system_user }}
+Group={{ nginx_exporter_system_group }}
+
+ExecStart={{ nginx_exporter_symlink }} -nginx.scrape-uri {{ nginx_exporter_scrape_uri }} \
+                                       -web.listen-address {{ nginx_exporter_telemetry_address }} \
+                                       -web.telemetry-path {{ nginx_exporter_telemetry_endpoint }}
+TimeoutStopSec=20s
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target

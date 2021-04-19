@@ -1,0 +1,7 @@
+---
+
+- name: Create memcached_exporter systemd file
+  template:
+    src: memcached_exporter.service.j2
+    dest: /etc/systemd/system/memcached-exporter.service
+  notify: restart memcached_exporter

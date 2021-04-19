@@ -1,0 +1,7 @@
+---
+
+- name: Create mysqld_exporter systemd file
+  template:
+    src: mysqld_exporter.service.j2
+    dest: /etc/systemd/system/mysqld-exporter.service
+  notify: restart mysqld_exporter

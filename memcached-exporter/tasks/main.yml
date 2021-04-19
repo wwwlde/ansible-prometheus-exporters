@@ -1,0 +1,12 @@
+---
+
+- import_tasks: install.yml
+
+- import_tasks: config.yml
+
+- name: Ensure memcached_exporter is started and enabled
+  systemd:
+    name: memcached-exporter
+    state: started
+    enabled: true
+    daemon_reload: true

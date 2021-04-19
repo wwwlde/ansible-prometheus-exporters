@@ -1,0 +1,34 @@
+[Unit]
+Description=Redis Exporter for Prometheus
+Documentation=https://github.com/oliver006/redis_exporter
+After=network.target
+
+[Service]
+Restart=always
+User={{ redis_exporter_system_user }}
+Group={{ redis_exporter_system_group }}
+ExecStart={{ redis_exporter_symlink }} \
+            {% if redis_exporter_check_keys != "" %}
+                -check-keys {{ redis_exporter_check_keys }} \
+            {% endif %}
+            {% if redis_exporter_script != "" %}
+                -script {{ redis_exporter_script }} \
+            {% endif %}
+            {% if redis_exporter_redis_password != "" %}
+                -redis.password {{ redis_exporter_redis_password }} \
+            {% endif %}
+            {% if redis_exporter_redis_alias != "" %}
+                -redis.alias {{ redis_exporter_redis_alias }} \
+            {% endif %}
+            {% if redis_exporter_redis_file != "" %}
+                -redis.file {{ redis_exporter_redis_file }} \
+            {% endif %}
+                -redis.addr {{ redis_exporter_redis_addr }} \
+                -namespace {{ redis_exporter_namespace }} \
+                -web.listen-address {{ redis_exporter_telemetry_address }} \
+                -web.telemetry-path {{ redis_exporter_telemetry_endpoint }}
+TimeoutStopSec=20s
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target

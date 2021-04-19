@@ -1,0 +1,20 @@
+---
+
+- import_tasks: install.yml
+
+- import_tasks: config.yml
+
+- name: Ensure apache_exporter is started and enabled
+  systemd:
+    name: apache-exporter
+    state: started
+    enabled: true
+    daemon_reload: true
+  when: ansible_distribution_major_version == '7'
+
+- name: Make sure service is running and enabled at boot
+  service:
+    name: apache-exporter
+    state: started
+    enabled: true
+  when: ansible_distribution_major_version == '6'

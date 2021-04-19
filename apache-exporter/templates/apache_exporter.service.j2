@@ -1,0 +1,18 @@
+[Unit]
+Description=Prometheus Apache Exporter
+After=network.target
+
+[Service]
+User={{ apache_exporter_system_user }}
+Group={{ apache_exporter_system_group }}
+
+ExecStart={{ apache_exporter_symlink }} \
+{% if apache_exporter_ignore_https %}
+          -insecure \
+{% endif %}
+          -scrape_uri {{ apache_exporter_scrape_uri }} \
+          -telemetry.address {{ apache_exporter_telemetry_address }} \
+          -telemetry.endpoint {{ apache_exporter_telemetry_endpoint }}
+
+[Install]
+WantedBy=multi-user.target

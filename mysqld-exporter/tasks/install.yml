@@ -1,0 +1,46 @@
+---
+
+- name: Create mysqld_exporter system group
+  group:
+    name: "{{ mysqld_exporter_system_group }}"
+    state: present
+    system: true
+
+- name: Create the mysqld_exporter user
+  user:
+    name: "{{ mysqld_exporter_system_user }}"
+    groups: "{{ mysqld_exporter_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: false
+
+- name: Ensure Prometheus exporters directory exist
+  file:
+    path: "{{ mysqld_exporter_install_dir }}"
+    state: directory
+
+- name: Create mysqld-exporter folder
+  file:
+    path: "{{ mysqld_exporter_install_dir }}/{{ mysqld_exporter_name }}"
+    state: directory
+
+- name: Unarchive mysqld Exporter
+  unarchive:
+    remote_src: yes
+    dest: "{{ mysqld_exporter_install_dir }}"
+    src: "{{ mysqld_exporter_url }}"
+
+- name: Create symlink to the current release
+  file:
+    src: "{{ mysqld_exporter_binary }}"
+    path: "{{ mysqld_exporter_symlink }}"
+    state: link
+  notify: restart mysqld_exporter
+
+- name: Create MySQL exporter user
+  mysql_user:
+    name: "{{ mysqld_exporter_mysql_user }}"
+    password: "{{ mysqld_exporter_mysql_password }}"
+    priv: "*.*:PROCESS,REPLICATION CLIENT,SELECT"
+  no_log: True

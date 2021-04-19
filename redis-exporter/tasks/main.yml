@@ -1,0 +1,53 @@
+---
+- name: Create redis_exporter system group
+  group:
+    name: "{{ redis_exporter_system_group }}"
+    state: present
+    system: true
+
+- name: Create the redis_exporter user
+  user:
+    name: "{{ redis_exporter_system_user }}"
+    groups: "{{ redis_exporter_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: false
+
+- name: Ensure Prometheus exporters directory exist
+  file:
+    path: "{{ redis_exporter_install_dir }}"
+    state: directory
+
+- name: Create redis-exporter folder
+  file:
+    path: "{{ redis_exporter_install_dir }}/{{ redis_exporter_name }}"
+    state: directory
+
+- name: Unarchive Redis Exporter
+  unarchive:
+    remote_src: yes
+    list_files: yes
+    dest: "{{ redis_exporter_install_dir }}"
+    src: "{{ redis_exporter_url }}"
+
+- name: Create symlink to the current release
+  file:
+    src: "{{ redis_exporter_binary }}"
+    path: "{{ redis_exporter_symlink }}"
+    state: link
+  notify: restart redis exporter
+
+- name: Create systemd script
+  template:
+    src: redis_exporter.service.j2
+    dest: /etc/systemd/system/redis-exporter.service
+  notify: restart redis exporter
+
+- meta: flush_handlers
+
+- name: Make sure Redis Exporter is started
+  service:
+    name: redis-exporter
+    state: started
+    enabled: yes

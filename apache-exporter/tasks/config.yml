@@ -1,0 +1,33 @@
+---
+
+- name: Create apache_exporter systemd file
+  template:
+    src: apache_exporter.service.j2
+    dest: /etc/systemd/system/apache-exporter.service
+  notify: restart apache_exporter
+  when: ansible_distribution_major_version == '7'
+
+- name: Configure init.d script
+  template:
+    src: templates/init.d.j2
+    dest: /etc/init.d/apache-exporter
+    backup: false
+    mode: '0755'
+  when: ansible_distribution_major_version == '6'
+
+- name: Precipitate log file
+  copy:
+    content: ''
+    force: false
+    dest: "{{ apache_exporter_legacy_log_file }}"
+    mode: '0640'
+    owner: "{{ apache_exporter_system_user }}"
+    group: adm
+  when: ansible_distribution_major_version == '6'
+
+- name: Configure logrotate
+  template:
+    src: templates/logrotate.j2
+    dest: /etc/logrotate.d/apache-exporter
+    backup: false
+  when: ansible_distribution_major_version == '6'

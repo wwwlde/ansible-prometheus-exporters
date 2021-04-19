@@ -1,0 +1,39 @@
+---
+
+- name: Create memcached_exporter system group
+  group:
+    name: "{{ memcached_exporter_system_group }}"
+    state: present
+    system: true
+
+- name: Create the memcached_exporter user
+  user:
+    name: "{{ memcached_exporter_system_user }}"
+    groups: "{{ memcached_exporter_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: false
+
+- name: Ensure Prometheus exporters directory exist
+  file:
+    path: "{{ memcached_exporter_install_dir }}"
+    state: directory
+
+- name: Create memcached-exporter folder
+  file:
+    path: "{{ memcached_exporter_install_dir }}/{{ memcached_exporter_name }}"
+    state: directory
+
+- name: Unarchive Memcached Exporter
+  unarchive:
+    remote_src: yes
+    dest: "{{ memcached_exporter_install_dir }}"
+    src: "{{ memcached_exporter_url }}"
+
+- name: Create symlink to the current release
+  file:
+    src: "{{ memcached_exporter_binary }}"
+    path: "{{ memcached_exporter_symlink }}"
+    state: link
+  notify: restart memcached_exporter

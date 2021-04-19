@@ -1,0 +1,17 @@
+---
+node_exporter_install_dir: "/opt/prometheus-exporters/node-exporter"
+node_exporter_version: "1.0.1"
+node_exporter_name: "node_exporter-{{ node_exporter_version }}.linux-{{ go_arch }}"
+node_exporter_url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/{{ node_exporter_name }}.tar.gz"
+
+node_exporter_binary: "{{ node_exporter_install_dir }}/{{ node_exporter_name }}/node_exporter"
+node_exporter_symlink: "{{ node_exporter_install_dir }}/node_exporter"
+
+node_exporter_system_group: "node-exporter"
+node_exporter_system_user: "{{ node_exporter_system_group }}"
+
+node_exporter_telemetry_address: "{{ ansible_default_ipv4.address }}:9100"
+node_exporter_telemetry_endpoint: /metrics
+
+node_exporter_legacy_log_file: /var/log/prometheus.log
+node_exporter_legacy_pid_file: /var/run/node_exporter.pid

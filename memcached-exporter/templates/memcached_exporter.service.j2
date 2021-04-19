@@ -1,0 +1,15 @@
+[Unit]
+Description=Prometheus Memcached Exporter
+After=network.target
+
+[Service]
+User={{ memcached_exporter_system_user }}
+Group={{ memcached_exporter_system_group }}
+
+ExecStart={{ memcached_exporter_symlink }} \
+          --memcached.address {{ memcached_exporter_memcached_addr }} \
+          --web.listen-address {{ memcached_exporter_web_listen_address }} \
+          --web.telemetry-path {{ memcached_exporter_web_telemetry_path }}
+
+[Install]
+WantedBy=multi-user.target

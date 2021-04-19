@@ -1,0 +1,23 @@
+[Unit]
+Description=Prometheus Node exporter
+Documentation=https://github.com/prometheus/node_exporter
+After=network.target
+
+[Service]
+Restart=always
+User={{ node_exporter_system_user }}
+Group={{ node_exporter_system_group }}
+ExecStart={{ node_exporter_symlink }} \
+          --web.listen-address={{ node_exporter_telemetry_address }} \
+          --collector.cpu.info \
+          --no-collector.textfile \
+          --no-collector.mdadm \
+          --no-collector.nfs \
+          --no-collector.nfsd \
+          --no-collector.xfs \
+          --no-collector.zfs
+TimeoutStopSec=20s
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target

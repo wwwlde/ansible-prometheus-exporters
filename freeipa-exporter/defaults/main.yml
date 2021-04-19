@@ -1,0 +1,19 @@
+---
+freeipa_exporter_install_dir: "/opt/prometheus-exporters/freeipa-exporter"
+freeipa_exporter_version: "0.1.2"
+freeipa_exporter_name: "389ds_exporter-{{ freeipa_exporter_version }}.linux-{{ go_arch }}"
+freeipa_exporter_url: "https://github.com/terrycain/389ds_exporter/releases/download/v{{ freeipa_exporter_version }}/{{ freeipa_exporter_name }}.tar.gz"
+
+freeipa_exporter_binary: "{{ freeipa_exporter_install_dir }}/{{ freeipa_exporter_name }}/389ds_exporter"
+freeipa_exporter_symlink: "{{ freeipa_exporter_install_dir }}/freeipa_exporter"
+
+freeipa_exporter_system_group: "freeipa-exporter"
+freeipa_exporter_system_user: "{{ freeipa_exporter_system_group }}"
+
+freeipa_exporter_telemetry_address: "{{ ansible_default_ipv4.address }}:9496"
+freeipa_exporter_telemetry_endpoint: /metrics
+
+freeipa_exporter_ipa_domain: "example.org"
+freeipa_exporter_ldap_addr: "localhost:686"
+freeipa_exporter_ldap_user: "cn=Directory Manager"
+freeipa_exporter_ldap_pass: ""

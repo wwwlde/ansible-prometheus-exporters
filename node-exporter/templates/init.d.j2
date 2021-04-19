@@ -1,0 +1,57 @@
+#!/bin/bash
+{# /etc/rc.d/init.d/node_exporter #}
+# chkconfig: 2345 20 80
+# description: Prometheus node exporter
+# processname: node_exporter
+# pidfile: {{ node_exporter_legacy_pid_file }}
+#
+
+
+. /etc/rc.d/init.d/functions
+
+PROGNAME=node_exporter
+PROG={{ node_exporter_install_dir }}/$PROGNAME
+USER={{ node_exporter_system_user }}
+LOGFILE={{ node_exporter_legacy_log_file }}
+LOCKFILE={{ node_exporter_legacy_pid_file }}
+NODE_OPTIONS="--web.listen-address={{ node_exporter_telemetry_address }} --collector.cpu.info --no-collector.textfile --no-collector.mdadm --no-collector.nfs --no-collector.nfsd --no-collector.xfs --no-collector.zfs"
+
+start() {
+    echo -n "Starting $PROGNAME: "
+    cd {{ node_exporter_install_dir }}/
+    daemon --user $USER --pidfile="$LOCKFILE" "$PROG $NODE_OPTIONS &>$LOGFILE &"
+    echo $(pidofproc $PROGNAME) >$LOCKFILE
+    echo
+}
+
+stop() {
+    echo -n "Shutting down $PROGNAME: "
+    killproc $PROGNAME
+    rm -f $LOCKFILE
+    echo
+}
+
+
+case "$1" in
+    start)
+    start
+    ;;
+    stop)
+    stop
+    ;;
+    status)
+    status $PROGNAME
+    ;;
+    restart)
+    stop
+    start
+    ;;
+    reload)
+    echo "Sending SIGHUP to $PROGNAME"
+    kill -SIGHUP $(pidofproc $PROGNAME)#!/bin/bash
+    ;;
+    *)
+        echo "Usage: service prometheus {start|stop|status|reload|restart}"
+        exit 1
+    ;;
+esac

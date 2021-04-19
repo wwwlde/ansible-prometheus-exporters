@@ -1,0 +1,8 @@
+---
+postfix_exporter_version:      '0.2.0'
+postfix_exporter_url:          "https://github.com/kumina/postfix_exporter/releases/download/{{ postfix_exporter_version }}/postfix_exporter"
+postfix_exporter_install_path: '/opt/prometheus-exporters/postfix-exporter'
+postfix_exporter_symlink:      '/opt/prometheus-exporters/postfix-exporter/postfix_exporter'
+postfix_exporter_systemd_enable: true
+postfix_exporter_telemetry_address:  '0.0.0.0:9154'
+postfix_exporter_telemetry_endpoint: '/metrics'

@@ -1,0 +1,21 @@
+[Unit]
+Description=Prometheus FreeIPA exporter
+Documentation=https://github.com/terrycain/389ds_exporter
+After=network.target
+
+[Service]
+Restart=always
+User={{ freeipa_exporter_system_user }}
+Group={{ freeipa_exporter_system_group }}
+ExecStart={{ freeipa_exporter_symlink }} \
+          -ipa-domain={{ freeipa_exporter_ipa_domain }} \
+          -ldap.addr={{ freeipa_exporter_ldap_addr }} \
+          -ldap.pass={{ freeipa_exporter_ldap_user }} \
+          -ldap.user={{ freeipa_exporter_ldap_pass }} \
+          -web.listen-address={{ freeipa_exporter_telemetry_address }} \
+          -web.telemetry-path={{ freeipa_exporter_telemetry_endpoint }} \
+TimeoutStopSec=20s
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target

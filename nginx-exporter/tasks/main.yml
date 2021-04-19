@@ -1,0 +1,52 @@
+---
+- name: Create nginx_exporter system group
+  group:
+    name: "{{ nginx_exporter_system_group }}"
+    state: present
+    system: true
+
+- name: Create the nginx_exporter user
+  user:
+    name: "{{ nginx_exporter_system_user }}"
+    groups: "{{ nginx_exporter_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: false
+
+- name: Ensure Prometheus exporters directory exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: nginx-exporter
+    group: nginx-exporter
+    mode: "u=rwx,g=rx,o="
+  with_items:
+    - "{{ nginx_exporter_install_dir }}/nginx-exporter-{{ nginx_exporter_version }}"
+
+- name: Unarchive Nginx Exporter
+  unarchive:
+    remote_src: yes
+    dest: "{{ nginx_exporter_install_dir }}/nginx-exporter-{{ nginx_exporter_version }}"
+    src: "{{ nginx_exporter_url }}"
+
+- name: Create symlink to the current release
+  file:
+    src: "{{ nginx_exporter_install_dir }}/nginx-exporter-{{ nginx_exporter_version }}/nginx-prometheus-exporter"
+    path: "{{ nginx_exporter_symlink }}"
+    state: link
+  notify: restart nginx-exporter
+
+- name: Create systemd script
+  template:
+    src: nginx-exporter.service.j2
+    dest: /etc/systemd/system/nginx-exporter.service
+  notify:
+    - reload systemd
+    - restart nginx-exporter
+
+- name: Make sure nginx is enabled and running
+  service:
+    name: nginx-exporter
+    state: started
+    enabled: yes

@@ -1,0 +1,6 @@
+---
+- name: restart freeipa_exporter
+  systemd:
+    name: freeipa-exporter
+    state: restarted
+    daemon_reload: true

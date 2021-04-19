@@ -1,0 +1,39 @@
+---
+
+- name: Create apache_exporter system group
+  group:
+    name: "{{ apache_exporter_system_group }}"
+    state: present
+    system: true
+
+- name: Create the apache_exporter user
+  user:
+    name: "{{ apache_exporter_system_user }}"
+    groups: "{{ apache_exporter_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: false
+
+- name: Ensure Prometheus exporters directory exist
+  file:
+    path: "{{ apache_exporter_install_dir }}"
+    state: directory
+
+- name: Create apache-exporter folder
+  file:
+    path: "{{ apache_exporter_install_dir }}/{{ apache_exporter_name }}"
+    state: directory
+
+- name: Unarchive Apache Exporter
+  unarchive:
+    remote_src: yes
+    dest: "{{ apache_exporter_install_dir }}"
+    src: "{{ apache_exporter_url }}"
+
+- name: Create symlink to the current release
+  file:
+    src: "{{ apache_exporter_binary }}"
+    path: "{{ apache_exporter_symlink }}"
+    state: link
+  notify: restart apache_exporter

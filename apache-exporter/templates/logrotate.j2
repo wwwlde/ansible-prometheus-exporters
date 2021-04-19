@@ -1,0 +1,9 @@
+{{ apache_exporter_legacy_log_file }} {
+  create 640 {{ apache_exporter_system_user }} adm
+  daily
+  rotate 7
+  missingok
+  notifempty
+  compress
+  delaycompress
+}

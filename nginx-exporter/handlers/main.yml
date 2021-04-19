@@ -1,0 +1,14 @@
+---
+
+- name: reload systemd
+  become: yes
+  command: systemctl daemon-reload
+
+- name: restart nginx-exporter
+  service: name=nginx-exporter state=restarted
+
+- name: reload nginx-exporter
+  service: name=nginx-exporter state=reloaded
+
+- name: stop nginx-exporter
+  service: name=nginx-exporter state=stopped

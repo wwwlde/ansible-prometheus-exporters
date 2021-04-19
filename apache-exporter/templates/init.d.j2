@@ -1,0 +1,56 @@
+#!/bin/bash
+{# /etc/rc.d/init.d/node_exporter #}
+# chkconfig: 2345 20 80
+# description: Prometheus apache exporter
+# processname: apache_exporter
+# pidfile: {{ apache_exporter_legacy_pid_file }}
+#
+
+. /etc/rc.d/init.d/functions
+
+PROGNAME=apache_exporter
+PROG={{ apache_exporter_install_dir }}/$PROGNAME
+USER={{ apache_exporter_system_user }}
+LOGFILE={{ apache_exporter_legacy_log_file }}
+LOCKFILE={{ apache_exporter_legacy_pid_file }}
+EXPORTER_OPTIONS="-scrape_uri {{ apache_exporter_scrape_uri }} -telemetry.address {{ apache_exporter_telemetry_address }} -telemetry.endpoint {{ apache_exporter_telemetry_endpoint }}"
+
+start() {
+    echo -n "Starting $PROGNAME: "
+    cd {{ apache_exporter_install_dir }}/
+    daemon --user $USER --pidfile="$LOCKFILE" "$PROG $EXPORTER_OPTIONS &>$LOGFILE &"
+    echo $(pidofproc $PROGNAME) >$LOCKFILE
+    echo
+}
+
+stop() {
+    echo -n "Shutting down $PROGNAME: "
+    killproc $PROGNAME
+    rm -f $LOCKFILE
+    echo
+}
+
+
+case "$1" in
+    start)
+    start
+    ;;
+    stop)
+    stop
+    ;;
+    status)
+    status $PROGNAME
+    ;;
+    restart)
+    stop
+    start
+    ;;
+    reload)
+    echo "Sending SIGHUP to $PROGNAME"
+    kill -SIGHUP $(pidofproc $PROGNAME)#!/bin/bash
+    ;;
+    *)
+        echo "Usage: service prometheus {start|stop|status|reload|restart}"
+        exit 1
+    ;;
+esac

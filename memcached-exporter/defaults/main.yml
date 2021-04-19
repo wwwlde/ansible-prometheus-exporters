@@ -1,0 +1,14 @@
+---
+memcached_exporter_install_dir: "/opt/prometheus-exporters/memcached-exporter"
+memcached_exporter_version: "0.6.0"
+memcached_exporter_name: "memcached_exporter-{{ memcached_exporter_version }}.linux-amd64"
+memcached_exporter_url: "https://github.com/prometheus/memcached_exporter/releases/download/v{{ memcached_exporter_version }}/{{ memcached_exporter_name }}.tar.gz"
+memcached_exporter_binary: "{{ memcached_exporter_install_dir }}/{{ memcached_exporter_name }}/memcached_exporter"
+memcached_exporter_symlink: "{{ memcached_exporter_install_dir }}/memcached_exporter"
+
+memcached_exporter_memcached_addr: "localhost:11211"
+memcached_exporter_web_listen_address: ":9150"
+memcached_exporter_web_telemetry_path: "/metrics"
+
+memcached_exporter_system_user: "memcached-exporter"
+memcached_exporter_system_group: "{{ memcached_exporter_system_user }}"

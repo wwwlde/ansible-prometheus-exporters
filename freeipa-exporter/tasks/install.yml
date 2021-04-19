@@ -1,0 +1,39 @@
+---
+
+- name: Create freeipa_exporter system group
+  group:
+    name: "{{ freeipa_exporter_system_group }}"
+    state: present
+    system: true
+
+- name: Create the freeipa_exporter user
+  user:
+    name: "{{ freeipa_exporter_system_user }}"
+    groups: "{{ freeipa_exporter_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: false
+
+- name: Ensure Prometheus exporters directory exist
+  file:
+    path: "{{ freeipa_exporter_install_dir }}"
+    state: directory
+
+- name: Create freeipa_exporter folder
+  file:
+    path: "{{ freeipa_exporter_install_dir }}/{{ freeipa_exporter_name }}"
+    state: directory
+
+- name: Unarchive Exporter
+  unarchive:
+    remote_src: yes
+    dest: "{{ freeipa_exporter_install_dir }}"
+    src: "{{ freeipa_exporter_url }}"
+
+- name: Create symlink to the current release
+  file:
+    src: "{{ freeipa_exporter_binary }}"
+    path: "{{ freeipa_exporter_symlink }}"
+    state: link
+  notify: restart freeipa_exporter

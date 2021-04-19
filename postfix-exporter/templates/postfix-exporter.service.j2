@@ -1,0 +1,23 @@
+[Unit]
+Description=postfix_exporter - Postfix metrics exporter for Prometheus.
+After=network.target
+
+[Service]
+Type=simple
+
+User=postfix-exporter
+Group=postfix-exporter
+
+ExecStart={{ postfix_exporter_symlink }} \
+{% if postfix_exporter_systemd_enable %}
+          --systemd.enable \
+{% endif %}
+           --web.listen-address {{ postfix_exporter_telemetry_address }} \
+           --web.telemetry-path {{ postfix_exporter_telemetry_endpoint }}
+
+SyslogIdentifier=postfix_exporter
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

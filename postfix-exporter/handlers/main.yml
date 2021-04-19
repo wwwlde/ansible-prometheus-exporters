@@ -1,0 +1,14 @@
+---
+
+- name: reload systemd
+  become: yes
+  command: systemctl daemon-reload
+
+- name: restart postfix-exporter
+  service: name=postfix-exporter state=restarted
+
+- name: reload postfix-exporter
+  service: name=postfix-exporter state=reloaded
+
+- name: stop postfix-exporter
+  service: name=postfix-exporter state=stopped

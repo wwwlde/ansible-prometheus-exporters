@@ -1,0 +1,12 @@
+---
+
+- import_tasks: install.yml
+
+- import_tasks: config.yml
+
+- name: Ensure freeipa_exporter is started and enabled
+  systemd:
+    name: freeipa-exporter
+    state: started
+    enabled: true
+    daemon_reload: true

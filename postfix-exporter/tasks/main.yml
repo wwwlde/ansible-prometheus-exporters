@@ -1,0 +1,56 @@
+---
+- name: Create postfix-exporter group
+  group: name=postfix-exporter state=present
+
+- name: Create postfix-exporter user
+  user:
+    name: postfix-exporter
+    group: postfix-exporter
+    createhome: no
+    shell: /sbin/nologin
+    state: present
+
+- name: Ensure Prometheus exporters directory exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: postfix-exporter
+    group: postfix-exporter
+    mode: "u=rwx,g=rx,o="
+  with_items:
+    - "{{ postfix_exporter_install_path }}/postfix-exporter-{{ postfix_exporter_version }}"
+
+- name: Download Postfix Exporter binary
+  get_url:
+    dest: "{{ postfix_exporter_install_path }}/postfix-exporter-{{ postfix_exporter_version }}/postfix_exporter"
+    url: "{{ postfix_exporter_url }}"
+    mode: '0755'
+
+- name: Create symlink to the current release
+  file:
+    src: "{{ postfix_exporter_install_path }}/postfix-exporter-{{ postfix_exporter_version }}/postfix_exporter"
+    path: "{{ postfix_exporter_symlink }}"
+    state: link
+  notify: restart postfix-exporter
+
+- name: Create postfix-exporter log file
+  file:
+    path: /var/log/postfix_exporter_input.log
+    owner: postfix-exporter
+    group: postfix-exporter
+    state: touch
+    mode: '0644'
+
+- name: Create systemd script
+  template:
+    src: postfix-exporter.service.j2
+    dest: /etc/systemd/system/postfix-exporter.service
+  notify:
+    - reload systemd
+    - restart postfix-exporter
+
+- name: Make sure postfix is enabled and running
+  service:
+    name: postfix-exporter
+    state: started
+    enabled: yes

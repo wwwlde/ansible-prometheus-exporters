@@ -1,0 +1,25 @@
+---
+
+redis_exporter_install_dir: "/opt/prometheus-exporters/redis-exporter"
+redis_exporter_version: "1.14.0"
+redis_exporter_name: "redis_exporter-v{{ redis_exporter_version }}.linux-{{ go_arch }}"
+redis_exporter_url: "https://github.com/oliver006/redis_exporter/releases/download/v{{ redis_exporter_version }}/{{ redis_exporter_name }}.tar.gz"
+
+redis_exporter_binary: "{{ redis_exporter_install_dir }}/{{ redis_exporter_name }}/redis_exporter"
+redis_exporter_symlink: "{{ redis_exporter_install_dir }}/redis_exporter"
+
+redis_exporter_system_group: "redis-exporter"
+redis_exporter_system_user: "{{ redis_exporter_system_group }}"
+
+redis_exporter_telemetry_address: "{{ ansible_default_ipv4.address }}:9108"
+redis_exporter_telemetry_endpoint: /metrics
+
+redis_exporter_log_format: "txt"
+redis_exporter_check_keys: ""
+redis_exporter_script: ""
+redis_exporter_redis_addr: "redis://localhost:6379"
+redis_exporter_redis_password: ""
+redis_exporter_redis_alias: ""
+redis_exporter_redis_file: ""
+redis_exporter_namespace: "redis"
+redis_exporter_use_cf_bindings: "false"

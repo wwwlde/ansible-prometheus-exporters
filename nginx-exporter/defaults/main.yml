@@ -1,0 +1,16 @@
+---
+nginx_exporter_install_dir: "/opt/prometheus-exporters/nginx-exporter"
+nginx_exporter_version: "0.8.0"
+nginx_exporter_name: "nginx_exporter-{{ nginx_exporter_version }}.linux-{{ go_arch }}"
+nginx_exporter_url: "https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v{{ nginx_exporter_version }}/nginx-prometheus-exporter-{{ nginx_exporter_version }}-linux-{{ go_arch }}.tar.gz"
+
+nginx_exporter_binary: "{{ nginx_exporter_install_dir }}/{{ nginx_exporter_name }}/nginx_exporter"
+nginx_exporter_symlink: "{{ nginx_exporter_install_dir }}/nginx_exporter"
+
+nginx_exporter_system_group: "nginx-exporter"
+nginx_exporter_system_user: "{{ nginx_exporter_system_group }}"
+
+nginx_exporter_telemetry_address: "{{ ansible_default_ipv4.address }}:9113"
+nginx_exporter_telemetry_endpoint: /metrics
+
+nginx_exporter_scrape_uri: 'http://127.0.0.1:8080/status'

@@ -1,0 +1,18 @@
+---
+apache_exporter_install_dir: "/opt/prometheus-exporters/apache-exporter"
+apache_exporter_version: "0.7.0"
+apache_exporter_name: "apache_exporter-{{ apache_exporter_version }}.linux-amd64"
+apache_exporter_url: "https://github.com/Lusitaniae/apache_exporter/releases/download/v{{ apache_exporter_version }}/{{ apache_exporter_name }}.tar.gz"
+apache_exporter_binary: "{{ apache_exporter_install_dir }}/{{ apache_exporter_name }}/apache_exporter"
+apache_exporter_symlink: "{{ apache_exporter_install_dir }}/apache_exporter"
+
+apache_exporter_system_group: apache-exporter
+apache_exporter_system_user: "{{ apache_exporter_system_group }}"
+
+apache_exporter_scrape_uri: http://localhost/server-status/?auto
+apache_exporter_telemetry_address: 0.0.0.0:9117
+apache_exporter_telemetry_endpoint: /metrics
+apache_exporter_ignore_https: false
+
+apache_exporter_legacy_log_file: /var/log/apache-exporter.log
+apache_exporter_legacy_pid_file: /var/run/apache_exporter.pid
